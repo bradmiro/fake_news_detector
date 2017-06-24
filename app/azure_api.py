@@ -5,6 +5,8 @@ import urllib.request
 import urllib.parse
 import urllib.error
 
+from nltk import tokenize
+
 
 class AzureAPI:
 
@@ -17,6 +19,8 @@ class AzureAPI:
         self.article_params = article_params
 
     def bing_spell_check(self):
+        """Pass article text to Bing spell check. Calculate the percent
+        of words that are misspelled from the whole."""
        
         headers = {
             # Request headers
@@ -48,6 +52,41 @@ class AzureAPI:
         spelling_error_perc = len(data_dict['flaggedTokens']) / len(raw_text.split())
         return spelling_error_perc
 
+    def text_analytics(self):
+        """Send the article text to the text analytics api where it will get
+        a sentiment score. The article is broken down into sentences, where
+        each sentence is given a sentiment score (Microsoft recommends this).
+
+        https://www.johanahlen.info/en/2017/04/text-analytics-and-sentiment-analysis-with-microsoft-cognitive-services/
+
+        :return: List of sentence sentiments
+        """
+
+        headers = {
+            # Request headers
+            'Content-Type': 'application/json',
+            'Ocp-Apim-Subscription-Key': self.keys['text_analytics'],
+        }
+        
+        sentiment_url = 'https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment'
+        
+        raw_text = self.article_params['text']
+
+        # Build post for sentiment
+        sentences = tokenize.sent_tokenize(raw_text)
+        content = []
+        for i, sentence in enumerate(sentences):
+            content.append({'id': str(i), 'language': 'en', 'text': sentence})
+        body = json.dumps({"documents": content}).encode('utf-8')
+
+        request = urllib.request.Request(sentiment_url, body, headers)
+        response = urllib.request.urlopen(request)
+        json_response = json.loads(response.read().decode('utf-8'))
+            
+        # Only return a list of the sentence sentiments
+        return json_response['documents']
+
+
 if __name__ == '__main__':
 
     from datetime import datetime
@@ -64,3 +103,5 @@ if __name__ == '__main__':
     api = AzureAPI(keys=test_keys, article_params=test_article)
     spelling_score = api.bing_spell_check()
     print(spelling_score)
+    sentiments = api.text_analytics()
+    print(sentiments)
