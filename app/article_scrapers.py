@@ -18,9 +18,13 @@ def download_data(url):
 
 
 def bloomberg_article(raw_html):
-    """
+    """Extract the article parameters from Bloomberg articles.
+
     Article parameters:
     source, author, date, text, title, images
+
+    :param raw_html: String of the raw html
+    :return: Dictionary of the article parameters
     """
 
     article_params = {'source': 'bloomberg',
@@ -59,10 +63,54 @@ def bloomberg_article(raw_html):
     return article_params
 
 
+def fox_articles(raw_html):
+    """Extract the article parameters from Fox News articles.
+
+    :param raw_html: String of the raw html
+    :return: Dictionary of the article parameters
+    """
+
+    article_params = {'source': 'fox',
+                     'author': '',
+                     'date': '',
+                     'text': '',
+                     'title': '',
+                     'images': [],
+                     }
+
+    # Parse the published date
+    date_obj = raw_html.xpath("//time[@class='date']/@datetime")[0]
+    date = datetime.strptime(date_obj[:date_obj.find('.')], '%Y-%m-%dT%H:%M:%S')
+    article_params['date'] = date
+
+    # Parse all article paragraphs
+    for paragraph_obj in raw_html.xpath("//div[@class='article-body']/p"):
+        article_params['text'] += ' ' + paragraph_obj.text_content().strip()
+
+    # Parse article title
+    title_obj = raw_html.xpath("//header[@class='article-header']/h1")[0]
+    title_text = title_obj.text_content().strip()
+    article_params['title'] = title_text
+
+    # Parse images from article
+    image_obj = raw_html.xpath("//div[@class='article-content']")[0]
+    img = image_obj.xpath(".//img/@src")
+    article_params['images'] = img
+
+    return article_params
+
+
 if __name__ == '__main__':
 
-    test_url = 'https://www.bloomberg.com/news/articles/2017-06-23/trump-didn-t-record-comey-white-house-tells-house-intel-panel'
+    # test_bloomberg_url = 'https://www.bloomberg.com/news/articles/2017-06-23/trump-didn-t-record-comey-white-house-tells-house-intel-panel'
 
-    test_article_html = download_data(url=test_url)
-    test_article_params = bloomberg_article(raw_html=test_article_html)
-    print(test_article_params)
+    # test_article_html = download_data(url=test_bloomberg_url)
+    # test_article_params = bloomberg_article(raw_html=test_article_html)
+    # print(test_article_params)
+
+    test_fox_article = 'http://www.foxnews.com/politics/2017/06/24/trump-questions-why-obama-allegedly-did-nothing-about-russia-hacking-in-fox-interview.html'
+
+    test_fox_article_html = download_data(url=test_fox_article)
+    test_fox_article_params = fox_articles(raw_html=test_fox_article_html)
+    #print(test_fox_article_params)
+
