@@ -63,7 +63,7 @@ def bloomberg_article(raw_html):
     return article_params
 
 
-def fox_articles(raw_html):
+def fox_article(raw_html):
     """Extract the article parameters from Fox News articles.
 
     :param raw_html: String of the raw html
@@ -111,6 +111,6 @@ if __name__ == '__main__':
     test_fox_article = 'http://www.foxnews.com/politics/2017/06/24/trump-questions-why-obama-allegedly-did-nothing-about-russia-hacking-in-fox-interview.html'
 
     test_fox_article_html = download_data(url=test_fox_article)
-    test_fox_article_params = fox_articles(raw_html=test_fox_article_html)
+    test_fox_article_params = fox_article(raw_html=test_fox_article_html)
     #print(test_fox_article_params)
 
