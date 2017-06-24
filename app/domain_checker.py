@@ -11,7 +11,7 @@ def checker(url):
     url_re = re.compile('(https:\ / \ /|http:\ / \ /|^)(www.|^)([ ^\ /] * )', re.IGNORECASE)
 
     url_match = url_re.match(url)
-
+\
     with open(url_list) as flagged_urls:
         for line in flagged_urls.readline():
             if url_match.group(1) == line:
