@@ -17,18 +17,21 @@
     </div>
     <br><br>
     <div class="content";>
-      <p id="paragraph">ARE YOU QUESTIONING CREDIBILITY OF AN ARTICLE? SUBMIT THE URL DOWN BELOW. </p>
+      <p id="paragraph">ARE YOU QUESTIONING CREDIBILITY OF AN ARTICLE? SUBMIT THE URL DOWN BELOW.</p>
     </div>
     <br><br>
     <div class="input";>
-      <form action="{{ url_for('url') }}" method="post">
+      <form action="">
         URL:
         <input type="text" name="url" id="box";>
         <input type="submit" value="SUBMIT" id="button";>
         <input type="button" value="REFRESH" onClick="window.location.reload()" id="re";>
       </form>
     </div>
+    <br><br><br>
     <div class="result";>
+      <span id="topstr"></span>
+      <br>
     </div>
   </body>
 </html>
