@@ -35,15 +35,18 @@ def domain_checker(url):
         else:
             return [url_domain, type_1]
     else:
-        return None
+        return [url_domain]
 
 
 if __name__ == '__main__':
     test_url_1 = 'https://www.bloomberg.com/news/articles/2017-06-23/senate-holdouts-seek-upper-hand-in-perilous-health-bill-talks'
     test_url_2 = 'http://www.zerohedge.com/news/2017-06-24/bernie-sanders-wife-under-fbi-investigation-bank-fraud'
+    test_url_3 = 'http://www.foxnews.com/politics/2017/06/24/trump-questions-why-obama-allegedly-did-nothing-about-russia-hacking-in-fox-interview.html'
 
     result_1 = domain_checker(test_url_1)
     result_2 = domain_checker(test_url_2)
+    result_3 = domain_checker(test_url_3)
 
     print(result_1)
     print(result_2)
+    print(result_3)
