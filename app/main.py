@@ -1,10 +1,11 @@
+import os
+
 from domain_checker import domain_checker
 from article_scrapers import download_data, bloomberg_article, fox_article
-from key_store import key_store
 from azure_api import AzureAPI
 from image_processing import clarifai_analysis
 
-def main(url=None, article_parameters=None):
+def main(url=None, article_parameters=None, heroku=False):
     
     if url is None and article_parameters is None:
         raise SystemError('Either an article URL or article HTML must be '
@@ -40,7 +41,16 @@ def main(url=None, article_parameters=None):
               'to provide %s articles.' % (domain, domain_clean[1]))
         
     # Load the API keys
-    keys = key_store()
+    if heroku:
+        keys = {
+            'bing_spell_check': os.environ.get('bing_spell_check', None),
+            'text_analytics': os.environ.get('text_analytics', None),
+            'clarifai_id': os.environ.get('clarifai_id', None),
+            'clarifai_secret': os.environ.get('clarifai_secret', None)
+        }
+    else:
+        from key_store import key_store
+        keys = key_store()
     
     # Have to encode the text with utf8 to prevent encoding errors
     try:
