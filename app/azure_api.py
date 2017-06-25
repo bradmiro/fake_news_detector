@@ -20,7 +20,10 @@ class AzureAPI:
 
     def bing_spell_check(self):
         """Pass article text to Bing spell check. Calculate the percent
-        of words that are misspelled from the whole."""
+        of words that are misspelled from the whole.
+
+        :return: 1 if there are more than 3 spelling errors, or 0 otherwise
+        """
        
         headers = {
             # Request headers
@@ -68,7 +71,8 @@ class AzureAPI:
 
         https://www.johanahlen.info/en/2017/04/text-analytics-and-sentiment-analysis-with-microsoft-cognitive-services/
 
-        :return: List of sentence sentiments
+        :return: Integer of the bucket value based on the average article
+            sentiment
         """
 
         headers = {

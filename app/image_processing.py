@@ -25,7 +25,7 @@ def website_snapshot(url):
     return save_path
 
 
-def clarifai_analysis(img_path, keys, n=5, url_source=True):
+def clarifai_analysis(img_path, keys, n=3, url_source=True):
     """Send an image to clarifai to have its features classified, returning
     the top n concepts as a list (based on accuracy).
 
