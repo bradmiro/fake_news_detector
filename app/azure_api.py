@@ -39,7 +39,7 @@ class AzureAPI:
         
         raw_text = self.article_params['text']
         # Replace all spaces in the text with plus signs that Azure requires
-        body = 'Text=' + raw_text.replace(' ', '+')
+        body = 'Text=' + str(raw_text).replace(' ', '+')
         
         try:
             conn = http.client.HTTPSConnection('api.cognitive.microsoft.com')
@@ -86,7 +86,7 @@ class AzureAPI:
         raw_text = self.article_params['text']
 
         # Build post for sentiment
-        sentences = tokenize.sent_tokenize(raw_text)
+        sentences = tokenize.sent_tokenize(str(raw_text))
         content = []
         for i, sentence in enumerate(sentences):
             content.append({'id': str(i), 'language': 'en', 'text': sentence})
