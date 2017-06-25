@@ -50,8 +50,13 @@ def clarifai_analysis(img_path, keys, n=3, url_source=True):
         # Send a image from the file path to the model
         image = C1Image(file_obj=open(img_path, 'rb'))
 
-    # Send the image to clairifai api to be proceessed
-    classification_data = model.predict([image])
+    try:
+        # Send the image to clairifai api to be proceessed
+        classification_data = model.predict([image])
+    except Exception as e:
+        # Return a list with 3 empty strings if the prediction fails
+        print('WARNING! Clairifai was unable to process the article image.')
+        return ['', '', '']
     
     # Pull out the concepts from the classification analysis
     concepts = classification_data['outputs'][0]['data']['concepts']
