@@ -3,7 +3,7 @@ import os
 from domain_checker import domain_checker
 from article_scrapers import download_data, bloomberg_article, fox_article
 from key_store import key_store
-from azuree_api import AzureAPI
+from azure_api import AzureAPI
 from image_processing import clarifai_analysis
 
 dir = os.path.dirname(__file__)
@@ -45,7 +45,13 @@ sentiment_scores = azure_api.text_analytics()
 article_parameters['sentiment'] = sentiment_scores
 
 # Send the article image to clairifai for topic processing
-image_top_concepts = clarifai_analysis(img_path=article_parameters['image'], n=3)
+image_top_concepts = clarifai_analysis(img_path=article_parameters['image'],
+        keys=keys, n=3)
+for i, concept in enumerate(image_top_concepts):
+    # Create paramters ('image_tag_1') for each n concepts
+    article_parameters['image_tag_%s' % i] = concept
+
+print(article_parameters)
 
 # All the features are then passed to a ML model where it tries to identify fake articles
 

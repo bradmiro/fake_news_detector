@@ -18,7 +18,6 @@ def domain_checker(url):
     url_domain = '{uri.netloc}'.format(uri=parsed_url)
     url_domain = url_domain.replace('www.', '')
 
-    print(url_domain)
     if not url_domain:
         raise Warning('Unable to determine the root URL for the following '
                       'file in domain_checker: %s' % (url,))
