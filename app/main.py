@@ -4,31 +4,41 @@ from key_store import key_store
 from azure_api import AzureAPI
 from image_processing import clarifai_analysis
 
-def main(url):
+def main(url=None, article_parameters=None):
     
-    # User submits a url (from a pre-approved source) they want to check
-    
-    # The domain is checked against a static list of fake news sites
-    domain_clean = domain_checker(url=url)
-    domain = domain_clean[0]
+    if url is None and article_parameters is None:
+        raise SystemError('Either an article URL or article HTML must be '
+                          'provided to main.py, however, neither were given.')
+    elif url and article_parameters:
+        raise Warning('Both a URL and an article HTML were provided to '
+                      'main.py. Only the URL will be used.')
+
+    if url:
+        # The article is also requrested from the url provided
+        article_html = download_data(url=url)
+
+        # The domain is checked against a static list of fake news sites
+        domain_clean = domain_checker(url=url)
+        domain = domain_clean[0]
+
+        # All important article parameters are parsed from the website
+        if domain == 'bloomberg.com':
+            article_parameters = bloomberg_article(raw_html=article_html)
+        elif domain == 'foxnews.com':
+            article_parameters = fox_article(raw_html=article_html)
+        else:
+            raise SystemError('The Fake News Detector only works with '
+                              'Bloomberg.com and foxnews.com articles.')
+    else:
+        # The domain is checked against a static list of fake news sites
+        domain_clean = domain_checker(url=article_parameters['source'])
+        domain = domain_clean[0]
     
     # The user is made aware immediately if the site is on the list
     if len(domain_clean) > 1:
         print('WARNING! The article provided is sourced from %s, which is known '
               'to provide %s articles.' % (domain, domain_clean[1]))
-    
-    # The article is also requrested from the url provided
-    article_html = download_data(url=url)
-    
-    # All important article parameters are parsed from the website
-    if domain == 'bloomberg.com':
-        article_parameters = bloomberg_article(raw_html=article_html)
-    elif domain == 'foxnews.com':
-        article_parameters = fox_article(raw_html=article_html)
-    else:
-        raise SystemError('The Fake News Detector only works with Bloomberg.com '
-                          'and foxnews.com articles.')
-    
+        
     # Load the API keys
     keys = key_store()
     
