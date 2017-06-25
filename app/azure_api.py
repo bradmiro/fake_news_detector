@@ -49,8 +49,17 @@ class AzureAPI:
             print("[Errno {0}] {1}".format(e.errno, e.strerror))
 
         data_dict = json.loads(data)
-        spelling_error_perc = len(data_dict['flaggedTokens']) / len(raw_text.split())
-        return spelling_error_perc
+        if len(data_dict['flaggedTokens']) > 3:
+            # Failed the spelling test
+            spelling_errors = 1
+        else:
+            # Passed the spelling test
+            spelling_errors = 0
+
+        # Calculate a spelling error percent based on the total words
+        #spelling_errors = len(data_dict['flaggedTokens']) / len(raw_text.split())
+
+        return spelling_errors
 
     def text_analytics(self):
         """Send the article text to the text analytics api where it will get
@@ -83,8 +92,30 @@ class AzureAPI:
         response = urllib.request.urlopen(request)
         json_response = json.loads(response.read().decode('utf-8'))
             
-        # Only return a list of the sentence sentiments
-        return json_response['documents']
+        # A list of dictionaries, with each dictionary containing a sentence
+        #   sentiment score
+        sentiments_list = json_response['documents']
+
+        # Calculate the articles average sentiment from all the sentences
+        cumulative_sentiment_score = 0
+        for sent in sentiments_list:
+            cumulative_sentiment_score += sent['score']
+        avg_article_sentiment = cumulative_sentiment_score/len(sentiments_list)
+
+        # Put article sentiments in bucket from 1 to 5, with 1 being very
+        #   negative and 5 being very positive
+        if avg_article_sentiment < 0.2:
+            sentiment = 1
+        elif 0.2 <= avg_article_sentiment < 0.4:
+            sentiment = 2
+        elif 0.4 <= avg_article_sentiment < 0.6:
+            sentiment = 3
+        elif 0.6 <= avg_article_sentiment < 0.8:
+            sentiment = 4
+        else:
+            sentiment = 5
+
+        return sentiment
 
 
 if __name__ == '__main__':
