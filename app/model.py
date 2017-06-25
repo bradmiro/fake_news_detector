@@ -7,7 +7,7 @@ def bag_of_words():
 
     :return: A tuple containing a list of words and a matrix of word counts by document.
     """
-    return TfidfVectorizer(sublinear_tf=True, stop_words=['and', 'to', 'the', 'of'])
+    return TfidfVectorizer(max_features=5000, sublinear_tf=True, stop_words=['and', 'to', 'the', 'of'])
 
 
 class BOWModel:
@@ -23,7 +23,7 @@ class BOWModel:
     def __init__(self, model):
         """Initializes the model.
 
-        :params model: An sk-learn regression model object.
+        :params model: An sk-learn model object.
         """
         self.model = model
         self.vectorizer = bag_of_words()
