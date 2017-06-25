@@ -27,7 +27,7 @@ def bloomberg_article(raw_html):
     :return: Dictionary of the article parameters
     """
 
-    article_params = {'source': 'bloomberg',
+    article_params = {'source': 'bloomberg.com',
                       'author': '',
                       'date': '',
                       'text': '',
@@ -70,7 +70,7 @@ def fox_article(raw_html):
     :return: Dictionary of the article parameters
     """
 
-    article_params = {'source': 'fox',
+    article_params = {'source': 'foxnews.com',
                      'author': '',
                      'date': '',
                      'text': '',
