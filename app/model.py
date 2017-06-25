@@ -1,25 +1,88 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import SGDRegressor
+from sklearn.model_selection import train_test_split
+import numpy as np
 import time
 import jsonlines
 
-def bag_of_words(docs):
+def bag_of_words():
     """
-    :param docs: A list of articles
+    This will return a TfidfVectorizer object to build a bag of words.
+
     :return: A tuple containing a list of words and a matrix of word counts by document.
     """
-    # vectorizer = CountVectorizer(ngram_range=(1,2), token_pattern=r'\b\w+\b')
 
     vectorizer = TfidfVectorizer(sublinear_tf=True, stop_words=['and', 'to', 'the', 'of'])
 
     return vectorizer
-    # bag = vectorizer.fit_transform(docs).toarray()
-    #
-    # words = vectorizer.get_feature_names()
-    #
-    #
-    #
-    # else:
-    #     return (words, bag)
+
+
+class BOW_Model:
+    """
+    This is a class that will build a model suitable for making predictions comparing bodies
+    of text. Specifically, the Bag of Words method will be implemented.
+
+    An sklearn regression model object is needed to initialize this model.
+    """
+
+    def __init__(self, model):
+        """Initializes the model.
+
+        :params model: An sklearn regression model object.
+        """
+        self.model = model
+
+
+    def fit(self, input, y):
+        """Fits the model using a Bag of Words.
+
+        :param input: A list of bodies of text data to train a bag of words.
+        :param y: The training target values corresponding to the input text data.
+        """
+
+        self.vectorizer = bag_of_words()
+        bag = self.vectorizer.fit_transform(input).toarray()
+        self.model.fit(X=bag, y=y)
+
+    def predict(self, X):
+        """Makes a prediction given some test data.
+
+        :param X: The input feature test data to make a prediction off of.
+
+        :returns: A np array with prediction values.
+        """
+        new_bag = self.vectorizer.transform(X)
+        self.y_ = self.model.predict(new_bag)
+        return self.y_
+
+    def error(self, y, threshold=0.05):
+        """Calculates the error of the model prediction. Since this model is
+        trained using a regressor, we include a threshold to depict whether or not
+        both the actual data and the prediction data fall on the same side of the
+        threshold. A prediction is counted as a hit if they do, and a miss otherwise.
+
+        :param y: The actual y values to compare to.
+        :threshold: The threshold for which we should test data. Default is 0.05.
+
+        :returns: The error percentage of our test data.
+        """
+        error_count = 0
+
+        for i in range(len(y)):
+            if (y[i] < threshold < y_[i]) or (y[i] > threshold > y_[i]):
+                error_count += 1
+
+        self.error = float(self.error_count)/len(self.y)
+        return self.error
+
+        print ("Error for threshold of {}: {}".format(threshold, self.error))
+
+
+
+
+
+
+
 
 
 
