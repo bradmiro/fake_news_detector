@@ -26,6 +26,8 @@ def build_training_data():
                          'image_tag_1', 'image_tag_2', 'image_tag_3',
                          'spelling', 'sentiment'])
     
+    article_count = 0
+
     # Iterate through all articles
     for index, row in source_df.iterrows():
         article_parameters = {'source': row['site_url'],
@@ -41,7 +43,7 @@ def build_training_data():
         important_params = [final_parameters['source'],
                             final_parameters['author'],
                             final_parameters['date'],
-                            final_parameters['text'],
+                            final_parameters['text'].decode('utf8'),
                             final_parameters['title'],
                             final_parameters['image_tag_1'],
                             final_parameters['image_tag_2'],
@@ -51,7 +53,10 @@ def build_training_data():
         with open(out_csv, 'a') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow(important_params)
-        
+
+        article_count += 1
+        print('Finished processing article %i' % article_count)
+
 
 if __name__ == '__main__':
 

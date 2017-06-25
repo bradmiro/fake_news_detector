@@ -42,6 +42,9 @@ def main(url=None, article_parameters=None):
     # Load the API keys
     keys = key_store()
     
+    # Have to encode the text with utf8 to prevent encoding errors
+    article_parameters['text'] = article_parameters['text'].encode('utf8')
+    
     # Send the article text to Azure Cognitive Service API for analysis
     azure_api = AzureAPI(keys=keys, article_params=article_parameters)
     # Calculate the spelling accuracy for the article text
@@ -56,7 +59,7 @@ def main(url=None, article_parameters=None):
             keys=keys, n=3)
     for i, concept in enumerate(image_top_concepts):
         # Create paramters ('image_tag_1') for each n concepts
-        article_parameters['image_tag_%s' % i] = concept
+        article_parameters['image_tag_%s' % str(int(i) + 1)] = concept
     
     # All the features are then passed to a ML model where it tries to identify fake articles
     

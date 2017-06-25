@@ -50,7 +50,6 @@ def bloomberg_article(raw_html):
     # Parse all article paragraphs out
     for paragraph_obj in raw_html.xpath("//div[@class='body-copy']/p"):
         article_params['text'] += ' ' + paragraph_obj.text_content().strip()
-    article_params['text'] = article_params['text'].encode('utf8')
 
     # Parse article title
     title_obj = raw_html.xpath("//span[@class='lede-text-only__highlight']")[0]
@@ -87,7 +86,6 @@ def fox_article(raw_html):
     # Parse all article paragraphs
     for paragraph_obj in raw_html.xpath("//div[@class='article-body']/p"):
         article_params['text'] += ' ' + paragraph_obj.text_content().strip()
-    article_params['text'] = article_params['text'].encode('utf8')
 
     # Parse article title
     title_obj = raw_html.xpath("//header[@class='article-header']/h1")[0]

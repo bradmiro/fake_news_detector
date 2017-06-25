@@ -14,9 +14,13 @@ def domain_checker(url):
     flagged_sources_df = pd.read_csv(flagged_source_file)
 
     # Parse the domain name out of the provided url
-    parsed_url = urlparse(url)
-    url_domain = '{uri.netloc}'.format(uri=parsed_url)
-    url_domain = url_domain.replace('www.', '')
+    if url[:4] == 'http':
+        parsed_url = urlparse(url)
+        url_domain = '{uri.netloc}'.format(uri=parsed_url)
+        url_domain = url_domain.replace('www.', '')
+    else:
+        # Unable to use urlparse if there is not an http in url
+        url_domain = url
 
     if not url_domain:
         raise Warning('Unable to determine the root URL for the following '
