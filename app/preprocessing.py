@@ -36,26 +36,38 @@ def pickle_load():
      """
     pass
 
-def preprocess(data_dict):
 
-    data = []
+from sklearn import preprocessing
+import os
 
-    data.append(data_dict['source'])
-    data.append(data_dict['author'])
-    data.append(data_dict['image_tag_1'])
-    data.append(data_dict['image_tag_2'])
-    data.append(data_dict['image_tag_3'])
-    data.append(data_dict['spelling'])
 
-    sentiment = int(data_dict['sentiment'])
 
-    for i in range(1,5):
-        data.append(1 if i == sentiment else 0)
+def preprocess(t_d):
 
-    data.append(data_dict('title'))
-    data.append(data_dict('text'))
+    tags = []
+    with open(os.getcwd() + '/app/data/tags.txt') as f:
+        for tag in f.readlines():
+            tags.append(tag)
 
-    if 'target' in data_dict:
-        data.append(data_dict['target'])
+    for c in tags:
+        t_d[c] = 0
 
-    return data
+    for i, r in t_d.iterrows():
+        t_d.loc[i, t_d['image_tag_1'][i]] = 1
+        t_d.loc[i, t_d['image_tag_2'][i]] = 1
+        t_d.loc[i, t_d['image_tag_3'][i]] = 1
+
+    t_d['sentiment_1'] = 0
+    t_d['sentiment_2'] = 0
+    t_d['sentiment_3'] = 0
+    t_d['sentiment_4'] = 0
+
+    sent = t_d['sentiment']
+
+    for i, r in t_d.iterrows():
+        if sent[i] != 5:
+            t_d.loc[i, 'sentiment_{}'.format(sent[i])] = 1
+
+    t_d = t_d.drop(['source', 'author', 'image_tag_1', 'image_tag_2', 'image_tag_3', 'title', 'sentiment'], axis=1)
+
+    return t_d.as_matrix()
