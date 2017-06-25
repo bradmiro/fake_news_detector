@@ -43,7 +43,16 @@ def main(url=None, article_parameters=None):
     keys = key_store()
     
     # Have to encode the text with utf8 to prevent encoding errors
-    article_parameters['text'] = article_parameters['text'].encode('utf8')
+    try:
+        article_parameters['text'] = str(article_parameters['text']).encode('utf8')
+    except Exception as e:
+        print('Uknown error processing article in main')
+        article_parameters['spelling'] = 0
+        article_parameters['sentiment'] = 3
+        article_parameters['image_tag_1'] = ''
+        article_parameters['image_tag_2'] = ''
+        article_parameters['image_tag_3'] = ''
+        return article_parameters
     
     # Send the article text to Azure Cognitive Service API for analysis
     azure_api = AzureAPI(keys=keys, article_params=article_parameters)

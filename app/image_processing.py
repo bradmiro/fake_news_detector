@@ -37,20 +37,20 @@ def clarifai_analysis(img_path, keys, n=3, url_source=True):
     :return: List of the top concepts from the image
     """
 
-    # Initialize the clarifai api
-    app = ClarifaiApp(keys['clarifai_id'], keys['clarifai_secret'])
-    
-    # Get the general model
-    model = app.models.get('general-v1.3')
-
-    if url_source:
-        # Send a url link of the image to the model
-        image = C1Image(url=img_path)
-    else:
-        # Send a image from the file path to the model
-        image = C1Image(file_obj=open(img_path, 'rb'))
-
     try:
+        # Initialize the clarifai api
+        app = ClarifaiApp(keys['clarifai_id'], keys['clarifai_secret'])
+        
+        # Get the general model
+        model = app.models.get('general-v1.3')
+
+        if url_source:
+            # Send a url link of the image to the model
+            image = C1Image(url=img_path)
+        else:
+            # Send a image from the file path to the model
+            image = C1Image(file_obj=open(img_path, 'rb'))
+
         # Send the image to clairifai api to be proceessed
         classification_data = model.predict([image])
     except Exception as e:

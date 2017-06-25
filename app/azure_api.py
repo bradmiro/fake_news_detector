@@ -51,8 +51,8 @@ class AzureAPI:
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno, e.strerror))
 
-        data_dict = json.loads(data)
         try:
+            data_dict = json.loads(data)
             if len(data_dict['flaggedTokens']) > 3:
                 # Failed the spelling test
                 spelling_errors = 1
